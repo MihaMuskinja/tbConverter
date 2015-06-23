@@ -11,6 +11,7 @@
 #include "converters/lecroybin.h"
 #include "converters/storage/storageio.h"
 #include "converters/storage/event.h"
+#include "converters/storage/plane.h"
 #include "converters/storage/hit.h"
 #include "converters/textconvert.h"
 #include "converters/rce/rceconvert.h"

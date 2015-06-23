@@ -73,6 +73,26 @@ Event* StorageIO::readEvent(Long64_t n)
     if (_clusters.at(nplane) && _clusters.at(nplane)->GetEntry(n) <= 0)
       throw "StorageIO: error reading clusters tree";
 
+    // Insert waveforms into the plane
+    // retrieve all of the branches from the tree
+    TObjArray* bArray = new TObjArray();
+    bArray = m_waveformsTrees[nplane]->GetListOfBranches();
+    int bSize = 0;
+    // loop over all the branches
+    for (Int_t i = 0; i < bArray->GetEntries(); i++ ) {
+      // read the waveform branch for this plane and store its size
+      bSize = ((TBranch*) bArray->At(i))->GetEntry(n);
+      // read the name of the branch
+      std::string bName( bArray->At(i)->GetName() );
+      // create a new std::vector<float> waveform and fill it
+      std::vector<float>* temp_wf = new std::vector<float>;
+      for (unsigned int i=0; i < bSize/sizeof(float); i++) {
+        temp_wf->push_back( Waveforms.at(bName)[i] );
+      }
+      event->getPlane(nplane)->addWaveform(bName, temp_wf);
+    } // loop over waveform branches
+
+
     // Generate the cluster objects
     for (int ncluster = 0; ncluster < numClusters; ncluster++)
     {
@@ -189,11 +209,44 @@ void StorageIO::writeEvent(Event* event)
       hitTiming[nhit] = hit->getTiming();
       hitInCluster[nhit] = hit->getCluster() ? hit->getCluster()->getIndex() : -1;
     }
+    
+    // read all the waveforms from the plane
+    std::map<std::string, std::vector<float>* > wfs = plane->getWaveforms();
+    // loop over waveforms
+    for (waveform_it iterator = wfs.begin(); iterator != wfs.end(); iterator++){
+      if(iterator->second->size() > MAX_WAVEFORM_POINTS)
+        std::cout << 
+          "StorageO::WriteEvent: Number of waveform points exceeds MAX_WAVEFORM_POINTS" << std::endl;
 
+      // create a key in Waveforms if it doesn't exist
+      if(Waveforms.find(iterator->first)==Waveforms.end())
+        Waveforms.insert( std::pair<std::string, float* > 
+          ( iterator->first, new float[MAX_WAVEFORM_POINTS] ) );
+
+      // copy plane->waveform content into the Waveform map
+      float* Waveform_it = Waveforms.at(iterator->first);
+      for(unsigned int i=0; i<iterator->second->size();i++)
+        // first set the value of iter and then increase it to iter+1
+        *Waveform_it++ = iterator->second->at(i); 
+
+      // create a new waveform branch if it doesn't yet exist
+      if( !m_waveformsTrees.empty() ) {
+        if( !m_waveformsTrees.at(nplane)->GetBranch(iterator->first.c_str()) ) {
+          // create title of the branch (i.e. branchName[xxx]/F)     
+          std::stringstream branchType; branchType << iterator->first << 
+          "[" << iterator->second->size() << "]/F";
+          // create a new branch in the appropriate tree
+          m_waveformsTrees.at(nplane)->Branch( iterator->first.c_str(), 
+            Waveforms[iterator->first], branchType.str().c_str() );
+        }
+      }
+    } // end loop over waveforms
+ 
     if (nplane >= _hits.size()) throw "StorageIO: event has too many planes for the storage";
 
     // Fill the plane by plane trees for this plane
     if (_hits.at(nplane)) _hits.at(nplane)->Fill();
+    if (m_waveformsTrees.at(nplane)) m_waveformsTrees.at(nplane)->Fill();
     if (_clusters.at(nplane)) _clusters.at(nplane)->Fill();
   }
 
@@ -246,6 +299,7 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
   // In output mode, create the directory structure and the relevant trees
   if (_fileMode == OUTPUT)
   {
+    cout << "OUTPUT" << endl;
     if (planeMask && VERBOSE)
       cout << "WARNING :: StorageIO: disregarding plane mask in output mode";
 
@@ -260,9 +314,11 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
       dir->cd();
 
       TTree* hits = new TTree("Hits", "Hits");
+      TTree* waveformsTreePl = new TTree("Waveforms", "Waveforms");
       TTree* clusters = new TTree("Clusters", "Clusters");
 
       _hits.push_back(hits);
+      m_waveformsTrees.push_back(waveformsTreePl);
       _clusters.push_back(clusters);
 
       hits->Branch("NHits", &numHits, "NHits/I");
@@ -316,6 +372,7 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
   // In input mode,
   if (_fileMode == INPUT)
   {
+    cout << "INPUT" << endl;
     if (_numPlanes && VERBOSE)
       cout << "WARNING :: StorageIO: disregarding specified number of planes" << endl;
     _numPlanes = 0; // Determine num planes from file structure
@@ -339,12 +396,15 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
       if (planeMask && planeMask->at(planeCount - 1)) continue;
 
       TTree* hits;
+      TTree* waveforms;
       TTree* clusters;
 
       _file->GetObject(ss.str().append("/Hits").c_str(), hits);
+      _file->GetObject(ss.str().append("/Waveforms").c_str(), waveforms);
       _file->GetObject(ss.str().append("/Clusters").c_str(), clusters);
 
       _hits.push_back(hits);
+      m_waveformsTrees.push_back(waveforms);
       _clusters.push_back(clusters);
       _numPlanes++;
 
@@ -359,6 +419,23 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
         hits->SetBranchAddress("PosX", hitPosX, &bHitPosX);
         hits->SetBranchAddress("PosY", hitPosY, &bHitPosY);
         hits->SetBranchAddress("PosZ", hitPosZ, &bHitPosZ);
+      }
+      
+      if (waveforms) {
+        // Add this tree to the current plane
+        m_waveformsTrees.push_back(waveforms);
+        // retrieve all of the branches from the tree
+        TObjArray* bArray = waveforms->GetListOfBranches();
+        // loop over all the branches
+        for (Int_t i = 0; i < bArray->GetEntries(); i++ ) {
+          // retreive the name of the waveform branch
+          const char* bName = bArray->At(i)->GetName();
+          // create a new float* key in Waveforms map
+          Waveforms.insert( std::pair<std::string, float* > 
+            (std::string(bName), new float[MAX_WAVEFORM_POINTS] ) );
+          // set address of the branch
+          waveforms->SetBranchAddress(bName, Waveforms.at( std::string(bName) ) );
+        }   // loop over waveform branches
       }
 
       if (clusters)

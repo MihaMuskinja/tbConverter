@@ -96,6 +96,7 @@ Event::Event(unsigned int numPlanes) :
   {
     Plane* plane = new Plane(nplane);
     _planes.push_back(plane);
+    //plane->getWaveforms()[std::string("waveform1")]->at(0);
   }
 }
 

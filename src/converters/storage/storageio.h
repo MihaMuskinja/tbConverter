@@ -15,8 +15,12 @@
 #define MAX_TRACKS 1000
 #define MAX_CLUSTERS 1000
 #define MAX_HITS 1000
+#define MAX_WAVEFORM_POINTS 1024
 
 namespace Storage {
+
+// iterator for a map of waveforms
+typedef std::map<std::string, std::vector<float>* >::iterator waveform_it;
 
 class Event;
 
@@ -53,12 +57,14 @@ private:
 
   // Trees containing event-by-event data for each plane
   std::vector<TTree*> _hits;
+  std::vector<TTree*> m_waveformsTrees;
   std::vector<TTree*> _clusters;
   // Trees global to the entire event
   TTree*              _tracks;
   TTree*              _eventInfo;
 
   // Variables in which the storage is output on an event-by-event basis
+  std::map<std::string, float* > Waveforms;
 
   Int_t    numHits;
   Int_t    hitPixX[MAX_HITS];

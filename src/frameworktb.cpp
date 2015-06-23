@@ -674,6 +674,16 @@ int32_t FrameworkTB::convertDrsToRoot()
     storageEvent->setTriggerOffset(0);
     storageEvent->setTriggerInfo(0);
     storageEvent->setInvalid( wana->isInvalid() );
+
+    std::vector<float>* wf1 = new std::vector<float>;
+    std::vector<float>* wf2 = new std::vector<float>;
+    for ( unsigned int i = 0; i < 1024; i++ ) {
+      wf1->push_back( i );
+      if (i%2==0) wf2->push_back( 10000+i );
+    }
+    storageEvent->getPlane(0)->addWaveform("waveform1",wf1);
+    storageEvent->getPlane(0)->addWaveform("waveform2",wf2);
+
     storage->writeEvent(storageEvent);
     if (storageEvent) delete storageEvent;
 

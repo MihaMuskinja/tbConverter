@@ -2,6 +2,12 @@
 #define PLANE_H
 
 #include <vector>
+#include <map>
+#include <iostream>
+#include <sstream>
+
+
+#define N_WAVEFORMS 4
 
 namespace Storage {
 
@@ -21,6 +27,7 @@ private:
   std::vector<Hit*> _hits;
   unsigned int _numClusters;
   std::vector<Cluster*> _clusters;
+  std::map< std::string, std::vector<float>* > m_waveforms;
 
 protected:
   void addHit(Hit* hit);
@@ -32,11 +39,15 @@ public:
   Hit* getHit(unsigned int n) const;
   Cluster* getCluster(unsigned int n) const;
 
+  std::vector<float>* getWaveform(std::string waveformName) const;
+  void addWaveform(std::string waveformName, std::vector<float>* wf);
+
   void print();
 
   inline unsigned int getPlaneNum() const { return _planeNum; }
   inline unsigned int getNumHits() const { return _numHits; }
   inline unsigned int getNumClusters() const { return _numClusters; }
+  inline std::map< std::string, std::vector<float>* > getWaveforms() const { return m_waveforms; }
 
   friend class Event;
 };

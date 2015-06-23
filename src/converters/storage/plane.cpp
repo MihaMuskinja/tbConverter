@@ -40,6 +40,7 @@ void Plane::addCluster(Cluster* cluster)
   _numClusters++;
 }
 
+
 Hit* Plane::getHit(unsigned int n) const
 {
   assert(n < getNumHits() && "Plane: hit index exceeds vector size");
@@ -52,8 +53,18 @@ Cluster* Plane::getCluster(unsigned int n) const
   return _clusters.at(n);
 }
 
+std::vector<float>* Plane::getWaveform(std::string waveformName) const {
+  assert(!(m_waveforms.find(waveformName) == m_waveforms.end()) && 
+    "Plane: requested waveform is not available");
+  return m_waveforms.at(waveformName);
+}
+
+void Plane::addWaveform(std::string waveformName, std::vector<float>* wf) {
+  m_waveforms.insert( std::pair< std::string, std::vector<float>* >(waveformName, wf ) );
+  return;
+}
+
 Plane::Plane(unsigned int planeNum) :
-  _planeNum(planeNum), _numHits(0), _numClusters(0)
-{ }
+  _planeNum(planeNum), _numHits(0), _numClusters(0){ }
 
 }

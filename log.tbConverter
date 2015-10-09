@@ -1,0 +1,200 @@
+
+ ========= Testbeam file format Converter ============ 
+  command            : convertdrstoroot
+  input name         : /media/ext1/DATA/CERN_SPS_2015_08/DRSRawData/drs2028.dat
+  output name        : /media/ext1/DATA/CERN_SPS_2015_08/DRSRootData/drs2028.root
+  config name        : configs/DRS.cfg
+
+ Starting conversion of a DRS binary file to ROOT format...
+ FileHandler initialised.
+ Input DRS .dat file: /media/ext1/DATA/CERN_SPS_2015_08/DRSRawData/drs2028.dat
+ Output ROOT file: /media/ext1/DATA/CERN_SPS_2015_08/DRSRootData/drs2028.root
+ Files in /media/ext1/DATA/CERN_SPS_2015_08/DRSRawData/
+ drs1012.dat
+ drs723.dat
+ drs1015.dat
+ drsT2.dat
+ test-andtrigg2.dat
+ ...
+ drs1013.dat
+ Raw folder ok. Retreived 16 data files.
+ Conv folder /media/ext1/DATA/CERN_SPS_2015_08/DRSRootData/ ok. 3 files currently in the folder.
+ Found data for board2510
+ Read out header C 0 0 1
+ Read out header C 0 0 2
+ Read out header C 0 0 3
+ Read out header C 0 0 4
+ Read out header E H D R
+ Waveform analysis running.
+ Waveform analysis running.
+OUTPUT
+0x23bd398
+ 
+ Converting DRS binaries into judithROOT file...
+Found event #300  Y2015-M10-D 8-H13-m27-s28-ms949
+Found event #600  Y2015-M10-D 8-H13-m27-s29-ms960
+Found event #900  Y2015-M10-D 8-H13-m27-s30-ms942
+Found event #1200  Y2015-M10-D 8-H13-m27-s31-ms874
+Found event #1500  Y2015-M10-D 8-H13-m27-s59-ms455
+Found event #1800  Y2015-M10-D 8-H13-m28-s 0-ms492
+Found event #2100  Y2015-M10-D 8-H13-m28-s 1-ms518
+Found event #2400  Y2015-M10-D 8-H13-m28-s 2-ms507
+Found event #2700  Y2015-M10-D 8-H13-m28-s16-ms788
+Found event #3000  Y2015-M10-D 8-H13-m28-s17-ms842
+Found event #3300  Y2015-M10-D 8-H13-m28-s18-ms845
+Found event #3600  Y2015-M10-D 8-H13-m28-s19-ms897
+Found event #3900  Y2015-M10-D 8-H13-m28-s20-ms851
+Found event #4200  Y2015-M10-D 8-H13-m28-s48-ms404
+Found event #4500  Y2015-M10-D 8-H13-m28-s49-ms390
+Found event #4800  Y2015-M10-D 8-H13-m28-s50-ms399
+Found event #5100  Y2015-M10-D 8-H13-m28-s51-ms358
+Found event #5400  Y2015-M10-D 8-H13-m28-s52-ms289
+Found event #5700  Y2015-M10-D 8-H13-m29-s 6-ms694
+Found event #6000  Y2015-M10-D 8-H13-m29-s 7-ms727
+Found event #6300  Y2015-M10-D 8-H13-m29-s 8-ms766
+Found event #6600  Y2015-M10-D 8-H13-m29-s 9-ms755
+Found event #6900  Y2015-M10-D 8-H13-m29-s37-ms139
+Found event #7200  Y2015-M10-D 8-H13-m29-s38-ms204
+Found event #7500  Y2015-M10-D 8-H13-m29-s39-ms215
+Found event #7800  Y2015-M10-D 8-H13-m29-s40-ms200
+Found event #8100  Y2015-M10-D 8-H13-m29-s41-ms170
+Found event #8400  Y2015-M10-D 8-H13-m29-s55-ms446
+Found event #8700  Y2015-M10-D 8-H13-m29-s56-ms420
+Found event #9000  Y2015-M10-D 8-H13-m29-s57-ms439
+Found event #9300  Y2015-M10-D 8-H13-m29-s58-ms402
+Found event #9600  Y2015-M10-D 8-H13-m29-s59-ms361
+Found event #9900  Y2015-M10-D 8-H13-m30-s26-ms911
+Found event #10200  Y2015-M10-D 8-H13-m30-s27-ms938
+Found event #10500  Y2015-M10-D 8-H13-m30-s28-ms935
+Found event #10800  Y2015-M10-D 8-H13-m30-s29-ms882
+Found event #11100  Y2015-M10-D 8-H13-m30-s30-ms825
+Found event #11400  Y2015-M10-D 8-H13-m30-s45-ms261
+Found event #11700  Y2015-M10-D 8-H13-m30-s46-ms310
+Found event #12000  Y2015-M10-D 8-H13-m30-s47-ms369
+Found event #12300  Y2015-M10-D 8-H13-m30-s48-ms329
+Found event #12600  Y2015-M10-D 8-H13-m31-s15-ms786
+Found event #12900  Y2015-M10-D 8-H13-m31-s16-ms811
+Found event #13200  Y2015-M10-D 8-H13-m31-s17-ms885
+Found event #13500  Y2015-M10-D 8-H13-m31-s18-ms856
+Found event #13800  Y2015-M10-D 8-H13-m31-s19-ms822
+Found event #14100  Y2015-M10-D 8-H13-m31-s34-ms136
+Found event #14400  Y2015-M10-D 8-H13-m31-s35-ms148
+Found event #14700  Y2015-M10-D 8-H13-m31-s36-ms144
+Found event #15000  Y2015-M10-D 8-H13-m31-s37-ms121
+Found event #15300  Y2015-M10-D 8-H13-m31-s38-ms58
+Found event #15600  Y2015-M10-D 8-H13-m32-s 5-ms681
+Found event #15900  Y2015-M10-D 8-H13-m32-s 6-ms680
+Found event #16200  Y2015-M10-D 8-H13-m32-s 7-ms679
+Found event #16500  Y2015-M10-D 8-H13-m32-s 8-ms643
+Found event #16800  Y2015-M10-D 8-H13-m32-s23-ms58
+Found event #17100  Y2015-M10-D 8-H13-m32-s24-ms69
+Found event #17400  Y2015-M10-D 8-H13-m32-s25-ms109
+Found event #17700  Y2015-M10-D 8-H13-m32-s26-ms79
+Found event #18000  Y2015-M10-D 8-H13-m32-s27-ms23
+Found event #18300  Y2015-M10-D 8-H13-m32-s54-ms562
+Found event #18600  Y2015-M10-D 8-H13-m32-s55-ms577
+Found event #18900  Y2015-M10-D 8-H13-m32-s56-ms592
+Found event #19200  Y2015-M10-D 8-H13-m32-s57-ms598
+Found event #19500  Y2015-M10-D 8-H13-m33-s11-ms846
+Found event #19800  Y2015-M10-D 8-H13-m33-s12-ms920
+Found event #20100  Y2015-M10-D 8-H13-m33-s13-ms951
+Found event #20400  Y2015-M10-D 8-H13-m33-s14-ms976
+Found event #20700  Y2015-M10-D 8-H13-m33-s15-ms929
+Found event #21000  Y2015-M10-D 8-H13-m33-s43-ms525
+Found event #21300  Y2015-M10-D 8-H13-m33-s44-ms551
+Found event #21600  Y2015-M10-D 8-H13-m33-s45-ms552
+Found event #21900  Y2015-M10-D 8-H13-m33-s46-ms556
+Found event #22200  Y2015-M10-D 8-H13-m33-s47-ms503
+Found event #22500  Y2015-M10-D 8-H13-m34-s 1-ms837
+Found event #22800  Y2015-M10-D 8-H13-m34-s 2-ms869
+Found event #23100  Y2015-M10-D 8-H13-m34-s 3-ms865
+Found event #23400  Y2015-M10-D 8-H13-m34-s 4-ms843
+Found event #23700  Y2015-M10-D 8-H13-m34-s32-ms303
+Found event #24000  Y2015-M10-D 8-H13-m34-s33-ms335
+Found event #24300  Y2015-M10-D 8-H13-m34-s34-ms360
+Found event #24600  Y2015-M10-D 8-H13-m34-s35-ms365
+Found event #24900  Y2015-M10-D 8-H13-m34-s36-ms318
+Found event #25200  Y2015-M10-D 8-H13-m34-s50-ms693
+Found event #25500  Y2015-M10-D 8-H13-m34-s51-ms706
+Found event #25800  Y2015-M10-D 8-H13-m34-s52-ms713
+Found event #26100  Y2015-M10-D 8-H13-m34-s53-ms706
+Found event #26400  Y2015-M10-D 8-H13-m34-s54-ms659
+Found event #26700  Y2015-M10-D 8-H13-m35-s22-ms223
+Found event #27000  Y2015-M10-D 8-H13-m35-s23-ms267
+Found event #27300  Y2015-M10-D 8-H13-m35-s24-ms263
+Found event #27600  Y2015-M10-D 8-H13-m35-s25-ms250
+Found event #27900  Y2015-M10-D 8-H13-m35-s39-ms567
+Found event #28200  Y2015-M10-D 8-H13-m35-s40-ms603
+Found event #28500  Y2015-M10-D 8-H13-m35-s41-ms600
+Found event #28800  Y2015-M10-D 8-H13-m35-s42-ms598
+Found event #29100  Y2015-M10-D 8-H13-m35-s43-ms547
+Found event #29400  Y2015-M10-D 8-H13-m36-s11-ms85
+Found event #29700  Y2015-M10-D 8-H13-m36-s12-ms126
+Found event #30000  Y2015-M10-D 8-H13-m36-s13-ms174
+Found event #30300  Y2015-M10-D 8-H13-m36-s14-ms136
+Found event #30600  Y2015-M10-D 8-H13-m36-s15-ms68
+Found event #30900  Y2015-M10-D 8-H13-m36-s29-ms388
+Found event #31200  Y2015-M10-D 8-H13-m36-s30-ms408
+Found event #31500  Y2015-M10-D 8-H13-m36-s31-ms413
+Found event #31800  Y2015-M10-D 8-H13-m36-s32-ms419
+Found event #32100  Y2015-M10-D 8-H13-m36-s59-ms914
+Found event #32400  Y2015-M10-D 8-H13-m37-s 0-ms914
+Found event #32700  Y2015-M10-D 8-H13-m37-s 1-ms925
+Found event #33000  Y2015-M10-D 8-H13-m37-s 2-ms910
+Found event #33300  Y2015-M10-D 8-H13-m37-s 3-ms911
+Found event #33600  Y2015-M10-D 8-H13-m37-s18-ms286
+Found event #33900  Y2015-M10-D 8-H13-m37-s19-ms303
+Found event #34200  Y2015-M10-D 8-H13-m37-s20-ms278
+Found event #34500  Y2015-M10-D 8-H13-m37-s21-ms267
+Found event #34800  Y2015-M10-D 8-H13-m37-s22-ms216
+Found event #35100  Y2015-M10-D 8-H13-m37-s49-ms789
+Found event #35400  Y2015-M10-D 8-H13-m37-s50-ms822
+Found event #35700  Y2015-M10-D 8-H13-m37-s51-ms817
+Found event #36000  Y2015-M10-D 8-H13-m37-s52-ms801
+Found event #36300  Y2015-M10-D 8-H13-m38-s 7-ms129
+Found event #36600  Y2015-M10-D 8-H13-m38-s 8-ms203
+Found event #36900  Y2015-M10-D 8-H13-m38-s 9-ms237
+Found event #37200  Y2015-M10-D 8-H13-m38-s10-ms240
+Found event #37500  Y2015-M10-D 8-H13-m38-s11-ms235
+Found event #37800  Y2015-M10-D 8-H13-m38-s38-ms661
+Found event #38100  Y2015-M10-D 8-H13-m38-s39-ms697
+Found event #38400  Y2015-M10-D 8-H13-m38-s40-ms709
+Found event #38700  Y2015-M10-D 8-H13-m38-s41-ms716
+Found event #39000  Y2015-M10-D 8-H13-m38-s42-ms673
+Found event #39300  Y2015-M10-D 8-H13-m38-s57-ms10
+Found event #39600  Y2015-M10-D 8-H13-m38-s58-ms34
+Found event #39900  Y2015-M10-D 8-H13-m38-s59-ms70
+Found event #40200  Y2015-M10-D 8-H13-m39-s 0-ms44
+Found event #40500  Y2015-M10-D 8-H13-m39-s27-ms485
+Found event #40800  Y2015-M10-D 8-H13-m39-s28-ms487
+Found event #41100  Y2015-M10-D 8-H13-m39-s29-ms482
+Found event #41400  Y2015-M10-D 8-H13-m39-s30-ms466
+Found event #41700  Y2015-M10-D 8-H13-m39-s31-ms465
+Found event #42000  Y2015-M10-D 8-H13-m39-s45-ms865
+Found event #42300  Y2015-M10-D 8-H13-m39-s46-ms895
+Found event #42600  Y2015-M10-D 8-H13-m39-s47-ms892
+Found event #42900  Y2015-M10-D 8-H13-m39-s48-ms879
+Found event #43200  Y2015-M10-D 8-H13-m39-s49-ms824
+Found event #43500  Y2015-M10-D 8-H13-m40-s17-ms435
+Found event #43800  Y2015-M10-D 8-H13-m40-s18-ms452
+Found event #44100  Y2015-M10-D 8-H13-m40-s19-ms449
+Found event #44400  Y2015-M10-D 8-H13-m40-s20-ms418
+Found event #44700  Y2015-M10-D 8-H13-m40-s34-ms666
+Found event #45000  Y2015-M10-D 8-H13-m40-s35-ms680
+Found event #45300  Y2015-M10-D 8-H13-m40-s36-ms718
+Found event #45600  Y2015-M10-D 8-H13-m40-s37-ms730
+Found event #45900  Y2015-M10-D 8-H13-m40-s38-ms700
+Found event #46200  Y2015-M10-D 8-H13-m41-s 6-ms257
+Found event #46500  Y2015-M10-D 8-H13-m41-s 7-ms327
+Found event #46800  Y2015-M10-D 8-H13-m41-s 8-ms413
+Found event #47100  Y2015-M10-D 8-H13-m41-s 9-ms399
+Found event #47400  Y2015-M10-D 8-H13-m41-s10-ms402
+Found event #47700  Y2015-M10-D 8-H13-m41-s24-ms806
+Found event #48000  Y2015-M10-D 8-H13-m41-s25-ms829
+Found event #48300  Y2015-M10-D 8-H13-m41-s26-ms833
+Found event #48600  Y2015-M10-D 8-H13-m41-s27-ms806
+Found event #48900  Y2015-M10-D 8-H13-m41-s55-ms220
+Found event #49200  Y2015-M10-D 8-H13-m41-s56-ms242
+
+
+

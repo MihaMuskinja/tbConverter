@@ -59,8 +59,15 @@ std::vector<float>* Plane::getWaveform(std::string waveformName) const {
   return m_waveforms.at(waveformName);
 }
 
-void Plane::addWaveform(std::string waveformName, std::vector<float>* wf) {
+float Plane::getWfSamplingWidth(std::string waveformName) const {
+  assert(!(m_wfSamplingWidths.find(waveformName) == m_wfSamplingWidths.end()) && 
+    "Plane: requested waveform sampling width is not available");
+  return m_wfSamplingWidths.at(waveformName);
+}
+
+void Plane::addWaveform(std::string waveformName, std::vector<float>* wf, float samplingWidth) {
   m_waveforms.insert( std::pair< std::string, std::vector<float>* >(waveformName, wf ) );
+  m_wfSamplingWidths.insert( std::pair< std::string, float >(waveformName, samplingWidth ) );
   return;
 }
 

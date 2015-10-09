@@ -49,8 +49,13 @@ read_DRS::read_DRS(string filename) :
        break;
     }
     int32_t i = hdr[3] - '0' - 1;
-    cout<<" Found timing calibration for channel "<<i+1<<endl;
+    //cout<<" Found timing calibration for channel "<<i+1<<endl;
     fread(&_bin_width[i][0], sizeof(float), 1024, _f);
+    //cout << "===================================" << endl;
+    //for(int j = 0; j < 1024; j++){
+    //  cout << "_bin_width["<<i<<"]["<<j<<"] " << _bin_width[i][j] << endl;
+    //}
+    //cout << "===================================" << endl;
   }
   // initialize statistics
   _ndt = 0;

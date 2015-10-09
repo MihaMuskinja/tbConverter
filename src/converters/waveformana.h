@@ -57,7 +57,7 @@ public:
 
   bool isInvalid();
 
-
+  inline Waveform* getWaveform() const { return _wave; }
 
 private:
   bool _showPulse;

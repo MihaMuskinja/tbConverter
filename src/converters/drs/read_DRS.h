@@ -48,6 +48,7 @@ namespace Converters {
   {
 
   public:
+    typedef float (*pointer_to_array)[1024];
     read_DRS();
     ~read_DRS();
     read_DRS(string); //binary file.
@@ -67,6 +68,8 @@ namespace Converters {
 //    int64_t getFileCurrent() {return (int64_t)_inFile.tellg();};
 
     void readEvent();
+
+    pointer_to_array getBinWidth() {return _bin_width;};
 
 
   private:

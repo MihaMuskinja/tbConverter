@@ -21,6 +21,8 @@ namespace Storage {
 
 // iterator for a map of waveforms
 typedef std::map<std::string, std::vector<float>* >::iterator waveform_it;
+typedef float (*pointer_to_array)[1024];
+
 
 class Event;
 
@@ -65,6 +67,7 @@ private:
 
   // Variables in which the storage is output on an event-by-event basis
   std::map<std::string, float* > Waveforms;
+  std::map<std::string, float >  WfSamplingWidths;
 
   Int_t    numHits;
   Int_t    hitPixX[MAX_HITS];
@@ -156,7 +159,7 @@ private:
 
 public:
   StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes = 0,
-            const unsigned int treeMask = 0, const std::vector<bool>* planeMask = 0);
+            const unsigned int treeMask = 0, const std::vector<bool>* planeMask = 0, pointer_to_array BinWidth = 0);
   ~StorageIO();
 
   Event* readEvent(Long64_t n); // Read an event and generate its objects

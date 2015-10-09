@@ -9,6 +9,7 @@
 #include <TDirectory.h>
 #include <TTree.h>
 #include <TBranch.h>
+#include <TVectorD.h>
 
 #include "event.h"
 #include "track.h"
@@ -89,7 +90,7 @@ Event* StorageIO::readEvent(Long64_t n)
       for (unsigned int i=0; i < bSize/sizeof(float); i++) {
         temp_wf->push_back( Waveforms.at(bName)[i] );
       }
-      event->getPlane(nplane)->addWaveform(bName, temp_wf);
+      event->getPlane(nplane)->addWaveform(bName, temp_wf, 1);
     } // loop over waveform branches
 
 
@@ -212,11 +213,14 @@ void StorageIO::writeEvent(Event* event)
     
     // read all the waveforms from the plane
     std::map<std::string, std::vector<float>* > wfs = plane->getWaveforms();
+    std::map<std::string, float > wfsSW = plane->getWfSamplingWidths();
     // loop over waveforms
     for (waveform_it iterator = wfs.begin(); iterator != wfs.end(); iterator++){
       if(iterator->second->size() > MAX_WAVEFORM_POINTS)
         std::cout << 
           "StorageO::WriteEvent: Number of waveform points exceeds MAX_WAVEFORM_POINTS" << std::endl;
+      // store the sampling width
+      WfSamplingWidths[iterator->first] = wfsSW.at(iterator->first);
 
       // create a key in Waveforms if it doesn't exist
       if(Waveforms.find(iterator->first)==Waveforms.end())
@@ -232,12 +236,18 @@ void StorageIO::writeEvent(Event* event)
       // create a new waveform branch if it doesn't yet exist
       if( !m_waveformsTrees.empty() ) {
         if( !m_waveformsTrees.at(nplane)->GetBranch(iterator->first.c_str()) ) {
-          // create title of the branch (i.e. branchName[xxx]/F)     
+          // create title of the wf branch (i.e. branchName[xxx]/F)     
           std::stringstream branchType; branchType << iterator->first << 
           "[" << iterator->second->size() << "]/F";
-          // create a new branch in the appropriate tree
+          // create title of the wf sampling width branch (i.e. branchNameSW/F)     
+          std::stringstream branchTypeSW; branchTypeSW << iterator->first << "SW/F";
+          std::stringstream branchNameSW; branchNameSW << iterator->first << "SW";
+          // create a new wf branch in the appropriate tree
           m_waveformsTrees.at(nplane)->Branch( iterator->first.c_str(), 
             Waveforms[iterator->first], branchType.str().c_str() );
+          // create a new wf sampling width branch in the appropriate tree
+          m_waveformsTrees.at(nplane)->Branch( branchNameSW.str().c_str(), 
+            &WfSamplingWidths[iterator->first], branchTypeSW.str().c_str() );
         }
       }
     } // end loop over waveforms
@@ -275,7 +285,7 @@ unsigned int StorageIO::getNumPlanes() const { return _numPlanes; }
 Storage::Mode StorageIO::getMode() const { return _fileMode; }
 
 StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes,
-                     const unsigned int treeMask, const std::vector<bool>* planeMask) :
+                     const unsigned int treeMask, const std::vector<bool>* planeMask, pointer_to_array BinWidth) :
   _filePath(filePath), _file(0), _fileMode(fileMode), _numPlanes(0), _numEvents(0),
   _noiseMasks(0)
 {
@@ -302,6 +312,27 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
     cout << "OUTPUT" << endl;
     if (planeMask && VERBOSE)
       cout << "WARNING :: StorageIO: disregarding plane mask in output mode";
+    
+    if (BinWidth) {
+      // if width of bins in waveforms is specified,
+      // write it to the file header.
+      cout << BinWidth << endl;
+      TVectorD binWidth0(1024);
+      TVectorD binWidth1(1024);
+      TVectorD binWidth2(1024);
+      TVectorD binWidth3(1024);
+      for(int i = 0; i < 1024; i++){
+        binWidth0[i] = BinWidth[0][i];
+        binWidth1[i] = BinWidth[1][i];
+        binWidth2[i] = BinWidth[2][i];
+        binWidth3[i] = BinWidth[3][i];
+      }
+      _file->cd();
+      binWidth0.Write("binWidth0");
+      binWidth1.Write("binWidth1");
+      binWidth2.Write("binWidth2");
+      binWidth3.Write("binWidth3");
+    }
 
     _numPlanes = numPlanes;
 
@@ -421,7 +452,8 @@ StorageIO::StorageIO(const char* filePath, Mode fileMode, unsigned int numPlanes
         hits->SetBranchAddress("PosZ", hitPosZ, &bHitPosZ);
       }
       
-      if (waveforms) {
+      //if (waveforms) {   INPUT mode is not implemented for waveforms in this version
+      if (0) {
         // Add this tree to the current plane
         m_waveformsTrees.push_back(waveforms);
         // retrieve all of the branches from the tree

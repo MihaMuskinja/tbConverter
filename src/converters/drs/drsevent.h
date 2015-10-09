@@ -71,11 +71,12 @@ public:
 
   void setWaveform (int32_t ch, uint16_t voltage[1024]) ;
 
+  ///////// timestamp in ms/10  /////////
   int64_t getTimestamp () { return (int64_t) _eh.millisecond +
-                                            _eh.second*1e3 +
-                                            _eh.minute*60*1e3 +
-                                            _eh.hour*60*60*1e3 +
-                                            _eh.day*24*60*60*1e3; };
+                                            _eh.second*1e4 +
+                                            _eh.minute*60*1e4 +
+                                            _eh.hour*60*60*1e4 +
+                                            _eh.day*24*60*60*1e4; };
 
   int print ( ) ;
 

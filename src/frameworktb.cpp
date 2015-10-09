@@ -213,9 +213,8 @@ int32_t FrameworkTB::convertTextToRoot()
   //start Judith StorageIO class
   Storage::StorageIO* storage = 0;
   unsigned int treeMask = Storage::Flags::TRACKS | Storage::Flags::CLUSTERS;
-  storage = new Storage::StorageIO(rootFile.c_str(), Storage::OUTPUT, 1, //1 output
-                                   treeMask);
-  
+  storage = new Storage::StorageIO(rootFile.c_str(), Storage::OUTPUT, 1, treeMask); //1 output
+
   
   //initialize progress bar
   ProgBar *pb = new ProgBar("\n Converting text list into judithROOT file...");
@@ -406,7 +405,7 @@ int32_t FrameworkTB::convertRceToRoot()
   unsigned int treeMask = Storage::Flags::TRACKS | Storage::Flags::CLUSTERS;
   storage = new Storage::StorageIO( rootFile.c_str(),
                                     Storage::OUTPUT,
-                                    _cfgParser->getParVal("Setup","number of planes"), //how many planes
+                                    _cfgParser->getParVal("Setup","number of planes"),
                                     treeMask);
 
 
@@ -586,6 +585,7 @@ int32_t FrameworkTB::convertDrsToRoot()
   int32_t maxEvents = 0;
   if (_inputArgs->getNumEvents() )
     maxEvents = _inputArgs->getNumEvents();
+  int32_t nEvents = 0;
 
   //check of argument with nr. of SKIPPED events exists. If yes, then
   //use this value for skippedEvents.
@@ -598,8 +598,17 @@ int32_t FrameworkTB::convertDrsToRoot()
   //start the RCE converter. open a binary file.
   Converters::read_DRS *readdrs = new Converters::read_DRS(DRSFile);
 
+  float (*DRS_bin_width)[1024] = readdrs->getBinWidth();
+  /*cout << "===================================" << endl;
+  for(int jj=0; jj < 4; jj++){
+    for(int j = 0; j < 1024; j++){
+      cout << "_bin_width["<<jj<<"]["<<j<<"] " << DRS_bin_width[jj][j] << endl;
+    }
+  }
+  cout << "===================================" << endl;*/
+
   //start the waveform analysis
-  WaveformAna *wana = new WaveformAna(
+  WaveformAna *wana1 = new WaveformAna(
             _cfgParser->getParStr("Waveform analyser", "show pulses"),
             _cfgParser->getParStr("Waveform analyser", "show histograms"),
             _cfgParser->getParFlo("Waveform analyser", "cut max ampl"),
@@ -609,14 +618,25 @@ int32_t FrameworkTB::convertDrsToRoot()
             _inputArgs->getTag() //tag = bias voltage and/or sample name
             );
 
+  //start the waveform analysis
+  WaveformAna *wana2 = new WaveformAna(
+            _cfgParser->getParStr("Waveform analyser", "show pulses"),
+            _cfgParser->getParStr("Waveform analyser", "show histograms"),
+            _cfgParser->getParFlo("Waveform analyser", "cut max ampl"),
+            _cfgParser->getParVal("Waveform analyser", "avg buf len"),
+            _cfgParser->getParVal("Waveform analyser", "baseline buf len"),
+            "",
+            _inputArgs->getTag() //tag = bias voltage and/or sample name
+            );
 
   //start Judith StorageIO class
   Storage::StorageIO* storage = 0;
   unsigned int treeMask = Storage::Flags::TRACKS | Storage::Flags::CLUSTERS;
   storage = new Storage::StorageIO( rootFile.c_str(),
                                     Storage::OUTPUT,
-                                    1, //how many planes
-                                    treeMask);
+                                    1,
+                                    treeMask, 0,
+                                    DRS_bin_width);
 
 
   //initialize progress bar
@@ -632,7 +652,7 @@ int32_t FrameworkTB::convertDrsToRoot()
     readdrs->readEvent();
 
     //send the waveform to the analyser
-    wana->loadWaveform(
+    wana1->loadWaveform(
       //Number of rows in the array
       (int64_t) 1024,   // (int64_t)
       //Time offset
@@ -642,10 +662,22 @@ int32_t FrameworkTB::convertDrsToRoot()
       //Amplitude column
       readdrs->getEvent()->_waveform[0]          //vector of floats
     );
+    //send the waveform to the analyser
+    wana2->loadWaveform(
+      //Number of rows in the array
+      (int64_t) 1024,   // (int64_t)
+      //Time offset
+      0,        //double
+      //Time column
+      readdrs->getEvent()->_time[1],       //vector of floats
+      //Amplitude column
+      readdrs->getEvent()->_waveform[1]          //vector of floats
+    );
 
 
     //update histograms
-    wana->updateHistos();
+    wana1->updateHistos();
+    wana2->updateHistos();
 
     //write values into root
 
@@ -655,38 +687,46 @@ int32_t FrameworkTB::convertDrsToRoot()
     //cout<<i<<"\t"<<"TSdiff "<<timestamp-old_timestamp<<" \tcorrTSdiff=\t"<<39.0641*(timestamp-old_timestamp)<<endl;
     //old_timestamp = timestamp;
 
-
     //save to storage
     Storage::Event* storageEvent = 0;
     storageEvent = new Storage::Event( 1 ); //event with one plane
-    if ( wana->getMaxAbsAmplitude() > _cfgParser->getParFlo("Waveform analyser","cut min ampl") /*[V]. if there was a hit according to analyser*/)
+    if ( wana1->getMaxAbsAmplitude() > _cfgParser->getParFlo("Waveform analyser","cut min ampl") /*[V]. if there was a hit according to analyser*/)
     {
       Storage::Hit* hit = storageEvent->newHit( 0 ); //hit in plane 1
       hit->setPix(0, 0); //pad detector only has one pixel
       hit->setTiming(2); //delayof the max amplitude from trigger time
-      hit->setValue( (double)wana->getMaxAbsAmplitude() ); //amplitude
+      hit->setValue( (double)wana1->getMaxAbsAmplitude() ); //amplitude
 
     }
-
 
     storageEvent->setTimeStamp( readdrs->getEvent()->getTimestamp() );
     storageEvent->setFrameNumber( readdrs->getEvent()->_eh.event_serial_number );
     storageEvent->setTriggerOffset(0);
     storageEvent->setTriggerInfo(0);
-    storageEvent->setInvalid( wana->isInvalid() );
+    storageEvent->setInvalid( wana1->isInvalid() );
+
+    //cout << "waveform size: " << wana->getWaveform()->getSize() << endl;
 
     std::vector<float>* wf1 = new std::vector<float>;
     std::vector<float>* wf2 = new std::vector<float>;
     for ( unsigned int i = 0; i < 1024; i++ ) {
-      wf1->push_back( i );
-      if (i%2==0) wf2->push_back( 10000+i );
+      wf1->push_back( wana1->getWaveform()->getAmpl()[i] );
+      wf2->push_back( wana2->getWaveform()->getAmpl()[i] );
+      //cout << "waveform at " << i << " amplitude: " << wana->getWaveform()->getAmpl()[i] << endl;
+      //wf1->push_back( i+10000*(nEvents+1) );
+      //if (i%2==0) wf2->push_back( i+10000*(nEvents+1) );
     }
-    storageEvent->getPlane(0)->addWaveform("waveform1",wf1);
-    storageEvent->getPlane(0)->addWaveform("waveform2",wf2);
+    //void Plane::addWaveform(std::string waveformName, std::vector<float>* wf, float samplingWidth)
+    storageEvent->getPlane(0)->addWaveform("waveform1",wf1,1);
+    storageEvent->getPlane(0)->addWaveform("waveform2",wf2,1);
+    storageEvent->getPlane(0)->addWaveform("trigger1",&readdrs->getEvent()->_waveform[2],1);
+    storageEvent->getPlane(0)->addWaveform("trigger2",&readdrs->getEvent()->_waveform[3],1);
 
     storage->writeEvent(storageEvent);
     if (storageEvent) delete storageEvent;
 
+    nEvents++;
+    if (nEvents == maxEvents) break;
 
   }
 

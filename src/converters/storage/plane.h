@@ -6,9 +6,6 @@
 #include <iostream>
 #include <sstream>
 
-
-#define N_WAVEFORMS 4
-
 namespace Storage {
 
 class Hit;
@@ -28,6 +25,7 @@ private:
   unsigned int _numClusters;
   std::vector<Cluster*> _clusters;
   std::map< std::string, std::vector<float>* > m_waveforms;
+  std::map< std::string, float > m_wfSamplingWidths;
 
 protected:
   void addHit(Hit* hit);
@@ -40,7 +38,8 @@ public:
   Cluster* getCluster(unsigned int n) const;
 
   std::vector<float>* getWaveform(std::string waveformName) const;
-  void addWaveform(std::string waveformName, std::vector<float>* wf);
+  float getWfSamplingWidth(std::string waveformName) const;
+  void addWaveform(std::string waveformName, std::vector<float>* wf, float samplingWidth);
 
   void print();
 
@@ -48,6 +47,7 @@ public:
   inline unsigned int getNumHits() const { return _numHits; }
   inline unsigned int getNumClusters() const { return _numClusters; }
   inline std::map< std::string, std::vector<float>* > getWaveforms() const { return m_waveforms; }
+  inline std::map< std::string, float > getWfSamplingWidths() const { return m_wfSamplingWidths; }
 
   friend class Event;
 };
